@@ -5,72 +5,66 @@ using System.Threading.Tasks;
 using Grabacr07.KanColleWrapper.Models;
 using Livet;
 using Livet.EventListeners;
-using Livet.EventListeners.WeakEvents;
-using Grabacr07.KanColleWrapper;
 
 namespace Grabacr07.KanColleViewer.ViewModels.Contents.Fleets
 {
-	/// <summary>
-	/// 母港で待機中の艦隊のステータスを表します。
-	/// </summary>
-	public class RepairingViewModel : ViewModel
-	{
-		private readonly Fleet Fleet;
+    public class RepairingViewModel : ViewModel
+    {
+        private readonly FleetDock source;
+        private PropertyChangedEventListener listener;
 
-		#region Dock
+        public string CompleteTime
+        {
+            get
+            {
+                return this.source.RepairingDock != null && this.source.RepairingDock.CompleteTime.HasValue
+                    ? this.source.RepairingDock.CompleteTime.Value.LocalDateTime.ToString("MM/dd HH:mm")
+                    : "--/-- --:--";
+            }
+        }
 
-		private RepairingDockViewModel _Dock;
+        public string Remaining
+        {
+            get
+            {
+                return this.source.RepairingDock != null && this.source.RepairingDock.Remaining.HasValue
+                    ? string.Format("{0:D2}:{1}",
+                        (int)this.source.RepairingDock.Remaining.Value.TotalHours,
+                        this.source.RepairingDock.Remaining.Value.ToString(@"mm\:ss"))
+                    : "--:--:--";
+            }
+        }
 
-		private RepairingDockViewModel Dock
-		{
-			get
-			{
-				return this._Dock;
-			}
-			set
-			{
-				if (value != this._Dock)
-				{
-					this._Dock = value;
-					this.RaisePropertyChanged();
-				}
-			}
-		}
-
-		#endregion
-
-		public string ship { get { return this.Dock != null ? this.Dock.Ship : "----"; } }
-		public string CompleteTime { get { return this.Dock != null ? this.Dock.CompleteTime : "--/-- --:--:--"; } }
-		public string Remaining { get { return this.Dock != null ? this.Dock.Remaining : "--:--:--"; } }
-
-		public RepairingViewModel(Fleet fleet)
-		{
-			this.Fleet = fleet;
-
-			if (this.Fleet.IsRepairling) this.Update();
-			this.CompositeDisposable.Add(new PropertyChangedEventListener(this.Fleet, 
-				(sender, args) => {if (this.Fleet.State == FleetState.Homeport) this.Update();})
-			);
-		}
-
-		internal void Update()
-		{
-			if (this.Dock != null) this.Dock.Dispose();
-			if (!KanColleClient.Current.Homeport.Repairyard.CheckRepairing(this.Fleet)) return;
-			var shipIds = this.Fleet.Ships.Select(x => x.Id).ToArray();
-			var repairyards = KanColleClient.Current.Homeport.Repairyard.Docks.Values.Where(x => x.Ship != null).Where(x => shipIds.Any(X => X == x.ShipId));
-			this.Dock = new RepairingDockViewModel(repairyards.MaxBy(x => x.Remaining).First());
-			this.Dock.CompositeDisposable.Add(
-				new PropertyChangedEventListener(this.Dock, (sender, args) => this.RaisePropertyChanged(args.PropertyName))
-			);
-		}
+        public bool IsRepairing
+        {
+            get { return this.source.IsRepairing; }
+        }
 
 
-		public virtual new void Dispose()
-		{
-			if (this.Dock != null) this.Dock.Dispose();
-
-			base.Dispose();
-		}
-	}
+        public RepairingViewModel(FleetDock dock)
+        {
+            this.source = dock;
+            if (dock.RepairingDock != null)
+            {
+                this.listener = new PropertyChangedEventListener(dock.RepairingDock, (sender2, args2) => this.RaisePropertyChanged(args2.PropertyName));
+            }
+            this.CompositeDisposable.Add(new PropertyChangedEventListener(dock,
+                (sender, args) =>
+                {
+                    if (args.PropertyName == "RepairingDock")
+                    {
+                        if (this.listener != null) this.listener.Dispose();
+                        if (dock.RepairingDock != null)
+                        {
+                            this.listener = new PropertyChangedEventListener(dock.RepairingDock, (sender2, args2) => this.RaisePropertyChanged(args2.PropertyName));
+                        }
+                        else this.listener = null;
+                        this.RaisePropertyChanged("CompleteTime");
+                        this.RaisePropertyChanged("Remaining");
+                    }
+                    else if (args.PropertyName == "IsRepairing")
+                        this.RaisePropertyChanged("IsRepairing");
+                }));
+        }
+    }
 }

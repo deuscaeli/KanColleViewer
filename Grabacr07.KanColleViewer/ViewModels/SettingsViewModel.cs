@@ -39,6 +39,12 @@ namespace Grabacr07.KanColleViewer.ViewModels
 		public IEnumerable<string> FlashWindowList { get; private set; }
 		public string[] FlashWindows = { "Opaque", "Direct", "GPU" };
 
+        public IEnumerable<string> BrowserVerticalPositionList { get; private set; }
+        public string[] BrowserVerticalPositions = { "Top", "Bottom"};
+
+        public IEnumerable<string> BrowserHorizontalPositionList { get; private set; }
+        public string[] BrowserHorizontalPositions = { "Left", "Right" };
+
 		#region ScreenshotFolder 変更通知プロパティ
 
 		public string ScreenshotFolder
@@ -242,43 +248,7 @@ namespace Grabacr07.KanColleViewer.ViewModels
 		}
 
 		#endregion
-
-        #region EnableCriticalNotify 変更通知プロパティ
-
-        public bool EnableCriticalNotify
-        {
-            get { return Settings.Current.EnableCriticalNotify; }
-            set
-            {
-                if (Settings.Current.EnableCriticalNotify != value)
-                {
-                    Settings.Current.EnableCriticalNotify = value;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-
-        #endregion
-
-        #region EnableCriticalAccent 変更通知プロパティ
-
-        public bool EnableCriticalAccent
-        {
-            get { return Settings.Current.EnableCriticalAccent; }
-            set
-            {
-                if (Settings.Current.EnableCriticalAccent != value)
-                {
-                    Settings.Current.EnableCriticalAccent = value;
-                    if (!Settings.Current.EnableCriticalAccent && App.ViewModelRoot.Mode == Mode.CriticalCondition)
-                        App.ViewModelRoot.Mode = Mode.Started;
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
-
-        #endregion
-
+        
 		#region EnableLogging 変更通知プロパティ
 
 		public bool EnableLogging
@@ -729,6 +699,8 @@ namespace Grabacr07.KanColleViewer.ViewModels
 
 			this.FlashQualityList = FlashQualities.ToList();
 			this.FlashWindowList = FlashWindows.ToList();
+            this.BrowserVerticalPositionList = BrowserVerticalPositions.ToList();
+            this.BrowserHorizontalPositionList = BrowserHorizontalPositions.ToList();
 
 			this.Libraries = App.ProductInfo.Libraries.Aggregate(
 				new List<BindableTextViewModel>(),
@@ -965,8 +937,6 @@ namespace Grabacr07.KanColleViewer.ViewModels
 					if (value)
 					{
 						Settings.Current.KanColleClientSettings.ViewRangeCalcType = this.Logic.Id;
-						if (KanColleClient.Current.Homeport != null)
-							foreach (var f in KanColleClient.Current.Homeport.Organization.Fleets) f.Value.Calculate();
 					}
 				}
 			}
