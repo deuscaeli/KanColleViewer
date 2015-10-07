@@ -936,7 +936,7 @@
     <JP-Name>「軽空母」戦隊、出撃せよ！</JP-Name>
     <TR-Name>Deploy the light carrier fleet!</TR-Name>
     <JP-Detail>軽空母1～2隻、軽巡1隻、駆逐艦3～4隻の艦隊でカムラン半島の敵を撃滅せよ！</JP-Detail>
-    <TR-Detail>Requires 1~2 CVL, 1 CL and 3~4 DD. Obtain victory at the boss node. (CLTs won't count.) </TR-Detail>
+    <TR-Detail>Sortie to World 2-1. Requires 1~2 CVL, 1 CL and 3~4 DD. Obtain victory at the boss node. (CLTs won't count.) </TR-Detail>
   </Quest>
   <Quest>
     <ID>255</ID>
@@ -1294,5 +1294,18 @@
     <TR-Name>In preparation for the 2nd attack, increase experience! </TR-Name>
     <JP-Detail>艦隊再突入に備え、艦隊練度向上を図る！本日中に「演習」で4回以上「勝利」せよ！</JP-Detail>
     <TR-Detail>Get 4 victories in Exercises within the same day.</TR-Detail>
+  </Quest>
+      <ID>311</ID>
+    <JP-Name>精鋭艦隊演習</JP-Name>
+    <TR-Name>Elite Fleet Practice</TR-Name>
+    <JP-Detail>同日中に「演習」で7回以上「勝利」をおさめ、我が精鋭艦隊の練度を示そう！</JP-Detail>
+    <TR-Detail>Get 7 victories in Exercises within the same day</TR-Detail>
+  </Quest>
+  <Quest>
+    <ID>286</ID>
+    <JP-Name>鎮守府正面の対潜哨戒を強化せよ！</JP-Name>
+    <TR-Name>Strengthen the Anti-Submarine Patrol in Front of the Naval Base!</TR-Name>
+    <JP-Detail>鎮守府正面の対潜哨戒を強化し、海上資源輸送路の安全を確立せよ！</JP-Detail>
+    <TR-Detail>Sortie to World 1-5 and obtain 4 A-Ranks (or better) at the boss. </TR-Detail>
   </Quest>
 </Quests>
