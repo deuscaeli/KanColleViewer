@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fiddler;
+using Grabacr07.KanColleWrapper.Globalization;
 using Grabacr07.KanColleWrapper.Internal;
 using Grabacr07.KanColleWrapper.Models.Raw;
 
@@ -240,6 +241,33 @@ namespace Grabacr07.KanColleWrapper.Models
 
 		#endregion
 
+		public string AllStats
+		{
+			get
+			{
+				string details = "";
+				details += string.Format("{0}: {1} ({2})\n", Resources.Stats_Firepower, this.Firepower.Current, (this.Firepower.IsMax ? @"MAX" : "+" + (this.Firepower.Max - this.Firepower.Current).ToString()));
+				details += string.Format("{0}: {1} ({2})\n", Resources.Stats_Torpedo, this.Torpedo.Current, (this.Torpedo.IsMax ? @"MAX" : "+" + (this.Torpedo.Max - this.Torpedo.Current).ToString()));
+				details += string.Format("{0}: {1} ({2})\n", Resources.Stats_AntiAir, this.AA.Current, (this.AA.IsMax ? @"MAX" : "+" + (this.AA.Max - this.AA.Current).ToString()));
+				details += string.Format("{0}: {1} ({2})\n", Resources.Stats_Armor, this.Armer.Current, (this.Armer.IsMax ? @"MAX" : "+" + (this.Armer.Max - this.Armer.Current).ToString()));
+				details += string.Format("{0}: {1} ({2})", Resources.Stats_Luck, this.Luck.Current, (this.Luck.IsMax ? @"MAX" : "+" + (this.Luck.Max - this.Luck.Current).ToString()));
+
+				return details;
+			}
+		}
+
+		public string RepairTime
+		{
+			get
+			{
+				if (!this.IsDamaged)
+					return "OK";
+
+				// Only need to show Facility time when they are not the same time and if the ship is lightly damaged
+				return string.Format(Resources.Ship_RepairDockToolTip, this.RepairDockTime)
+					+ (this.IsLightlyDamaged && this.RepairFacilityTime != this.RepairDockTime ? "\n" + string.Format(Resources.Ship_RepairFacilityToolTip, this.RepairFacilityTime) : "");
+			}
+		}
 
 		#region Slots 変更通知プロパティ
 
@@ -328,29 +356,11 @@ namespace Grabacr07.KanColleWrapper.Models
 		}
 
 		/// <summary>
-		/// For visually generated elements. "[Lv.00]   Name"
-		/// </summary>
-		public string LvName
-		{
-			get { return "[Lv." + this.Level + "]  \t" + this.Info.Name; }
-		}
-		
-		/// <summary>
 		/// この艦が出撃した海域を識別する整数値を取得します。
 		/// </summary>
 		public int SallyArea
 		{
 			get { return this.RawData.api_sally_area; }
-		}
-
-		/// <summary>
-		/// For visually generated elements. 
-		/// "Name           [Lv.00]"
-		/// "Long Name      [Lv.00]"    
-		/// </summary>
-		public string NameLv
-		{
-			get { return string.Format("{0, -20} [Lv.{1}]", this.Info.Name, this.Level); }
 		}
 
 		/// <summary>
@@ -360,7 +370,7 @@ namespace Grabacr07.KanColleWrapper.Models
 		{
 			get
 			{
-				return TimeSpan.FromSeconds(Math.Floor((this.HP.Maximum - this.HP.Current) * BaseRepairTime[Math.Min(this.Level, 150)] * this.Info.ShipType.RepairMultiplier) + 30).ToString();
+				return TimeSpan.FromSeconds(Math.Floor((this.HP.Maximum - this.HP.Current) * this.BaseRepairTime[Math.Min(this.Level, 150)] * this.Info.ShipType.RepairMultiplier) + 30).ToString();
 			}
 		}
 
@@ -369,11 +379,11 @@ namespace Grabacr07.KanColleWrapper.Models
 			get
 			{
 				// Time it takes to heal 1HP
-				double MinDockTime = Math.Floor(BaseRepairTime[Math.Min(this.Level, 150)] * this.Info.ShipType.RepairMultiplier) + 30;
+				double minDockTime = Math.Floor(this.BaseRepairTime[Math.Min(this.Level, 150)] * this.Info.ShipType.RepairMultiplier) + 30;
 
-				if (MinDockTime < 1200)
-					return RepairDockTime;
-					
+				if (minDockTime < 1200)
+					return this.RepairDockTime;
+
 				return TimeSpan.FromMinutes((this.HP.Maximum - this.HP.Current) * 20).ToString();
 			}
 		}
@@ -412,7 +422,7 @@ namespace Grabacr07.KanColleWrapper.Models
 		}
 
 		#endregion
-        
+
 		internal Ship(Homeport parent, kcsapi_ship2 rawData)
 			: base(rawData)
 		{
@@ -452,22 +462,23 @@ namespace Grabacr07.KanColleWrapper.Models
 			{
 				this.Situation &= ~ShipSituation.DamageControlled;
 			}
+
 			// Minimum removes equipped values.
-			int EqAntiSub = 0, EqEvasion = 0, EqLineOfSight = 0;
+			int eqAntiSub = 0, eqEvasion = 0, eqLineOfSight = 0;
 
 			foreach (ShipSlot item in this.EquippedSlots)
 			{
 				if (item == null)
 					continue;
 
-				EqAntiSub += item.Item.Info.RawData.api_tais;
-				EqEvasion += item.Item.Info.RawData.api_houk;
-				EqLineOfSight += item.Item.Info.RawData.api_saku;
+				eqAntiSub += item.Item.Info.RawData.api_tais;
+				eqEvasion += item.Item.Info.RawData.api_houk;
+				eqLineOfSight += item.Item.Info.RawData.api_saku;
 			}
 
-			this.AntiSub = new LimitedValue(this.RawData.api_taisen[0], this.RawData.api_taisen[1], this.RawData.api_taisen[0] - EqAntiSub);
-			this.Evasion = new LimitedValue(this.RawData.api_kaihi[0], this.RawData.api_kaihi[1], this.RawData.api_kaihi[0] - EqEvasion);
-			this.LineOfSight = new LimitedValue(this.RawData.api_sakuteki[0], this.RawData.api_sakuteki[1], this.RawData.api_sakuteki[0] - EqLineOfSight);
+			this.AntiSub = new LimitedValue(this.RawData.api_taisen[0], this.RawData.api_taisen[1], this.RawData.api_taisen[0] - eqAntiSub);
+			this.Evasion = new LimitedValue(this.RawData.api_kaihi[0], this.RawData.api_kaihi[1], this.RawData.api_kaihi[0] - eqEvasion);
+			this.LineOfSight = new LimitedValue(this.RawData.api_sakuteki[0], this.RawData.api_sakuteki[1], this.RawData.api_sakuteki[0] - eqLineOfSight);
 		}
 
 

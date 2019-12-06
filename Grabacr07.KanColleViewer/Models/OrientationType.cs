@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Grabacr07.KanColleViewer.Models
 {
-    public enum OrientationType
-    {
-        Vertical,
-        Horizontal,
+	[Flags]
+	public enum OrientationType
+	{
+		Vertical,
+		Horizontal,
         Auto,
     }
 }

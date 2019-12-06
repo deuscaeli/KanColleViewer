@@ -23,7 +23,7 @@ namespace Grabacr07.KanColleViewer.Models
 			"KanColleViewer",
 			"Settings.xml");
 
-		private static readonly string CurrentSettingsVersion = "1.10";
+		private static readonly string CurrentSettingsVersion = "1.11";
 
 		public static Settings Current { get; set; }
 
@@ -77,6 +77,8 @@ namespace Grabacr07.KanColleViewer.Models
 				VerticalSize = new Point(0,1000),
                 BrowserVerticalPosition = "Top",
                 BrowserHorizontalPosition = "Left",
+				CloseConfirm = true,
+				CloseConfirmOnlyInSortie = true,
 			};
 		}
 
@@ -417,8 +419,7 @@ namespace Grabacr07.KanColleViewer.Models
 		}
 
 		#endregion
-
-
+		
 		#region EnableTranslations 変更通知プロパティ
 
 		private bool _EnableTranslations;
@@ -530,6 +531,8 @@ namespace Grabacr07.KanColleViewer.Models
 		}
 
 		#endregion
+
+		// ReSharper disable InconsistentNaming
 
 		#region ShipCatalog_SaveFilters 変更通知プロパティ
 
@@ -873,6 +876,8 @@ namespace Grabacr07.KanColleViewer.Models
 
 		#endregion
 
+		// ReSharper restore InconsistentNaming
+
 		#region FlashQuality 変更通知プロパティ
 
 		private string _FlashQuality;
@@ -945,24 +950,24 @@ namespace Grabacr07.KanColleViewer.Models
 		}
 		#endregion
 
-		#region Orientation
-        [XmlIgnore]
-        private OrientationType _Orientation;
+		#region Orientation 変更通知プロパティ
 
-        [XmlIgnore]
-        public OrientationType Orientation
+		[XmlIgnore]
+		private IOrientationMode _Orientation;
+
+		[XmlIgnore]
+		public IOrientationMode Orientation
 		{
-            get { return this._Orientation & OrientationType.Horizontal; }
-            set
-            {
-                if (this._Orientation != value)
-                {
-                    this._Orientation = value;
-                    this.RaisePropertyChanged();
-                }
-            }
+			get { return this._Orientation; }
+			set
+			{
+				if (this._Orientation != value)
+				{
+					this._Orientation = value;
+					this.RaisePropertyChanged();
+				}
+			}
 		}
-
 
         private OrientationType _OrientationMode;
 
@@ -978,9 +983,10 @@ namespace Grabacr07.KanColleViewer.Models
                 }
             }
         }
+
 		#endregion
 
-		#region MenuIcon
+		#region MenuIcon 変更通知プロパティ
 
 		private bool _MenuIcon;
 
@@ -998,7 +1004,7 @@ namespace Grabacr07.KanColleViewer.Models
 		}
 		#endregion
 
-		#region BackupSize
+		#region BackupSize 変更通知プロパティ
 
 		private Point _HorizontalSize;
 
@@ -1032,9 +1038,9 @@ namespace Grabacr07.KanColleViewer.Models
 
 		#endregion
 
-        #region BrowserPosition
+		#region BrowserPosition 変更通知プロパティ
 
-        private string _BrowserHorizontalPosition;
+		private string _BrowserHorizontalPosition;
 
         public string BrowserHorizontalPosition
         {
@@ -1065,6 +1071,42 @@ namespace Grabacr07.KanColleViewer.Models
         }
 
         #endregion
+
+		#region CloseConfirm 変更通知プロパティ
+
+		private bool _CloseConfirm;
+
+		public bool CloseConfirm
+		{
+			get { return this._CloseConfirm; }
+			set
+			{
+				if (this._CloseConfirm != value)
+				{
+					this._CloseConfirm = value;
+					this.RaisePropertyChanged();
+				}
+			}
+		}
+		#endregion
+
+		#region CloseConfirmOnlyInSortie 変更通知プロパティ
+
+		private bool _CloseConfirmOnlyInSortie;
+
+		public bool CloseConfirmOnlyInSortie
+		{
+			get { return this._CloseConfirmOnlyInSortie; }
+			set
+			{
+				if (this._CloseConfirmOnlyInSortie != value)
+				{
+					this._CloseConfirmOnlyInSortie = value;
+					this.RaisePropertyChanged();
+				}
+			}
+		}
+		#endregion
 
 		public void Save()
 		{

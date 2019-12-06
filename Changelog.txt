@@ -2,6 +2,46 @@
 	KCV Change Log
 ========================
 
+v3.8.2 r557 - 8/10/2015
+	* Fix cookie method not working
+	* Support chinese tw
+	* Some small fixs
+
+v3.8.2 r556 - 5/29/2015
+	* Fix ship count don't update when drop same ship type
+	* Web browser size auto stretch when not in game
+	* Some back-end changes
+
+v3.8.1 r555 - 5/24/2015
+	* Fix orientation startup
+
+v3.8.1 r554 - 5/24/2015
+	* Fix loading forever when startup
+	* Update ship number realtime
+
+v3.8.1 r552 - 5/19/2015
+	* Fix fleet state doesn't update when sortie
+	* Add pagination for log viewer
+
+v3.8.0 r551 - 5/18/2015
+	* Fix for 2015/05/18 update
+
+v3.7.0 r550 - 5/18/2015
+	* Change FleetWindow's layout
+	* Add Large-sized Flying Boat icon
+	* Check version in another thread
+	* Update EventMapHpViewer plugin
+	* Add setting to enable exit dialog
+	* Remove korean and deutsch localization
+	* Remove ships lock filter
+	* Fix flash quality setting
+	* Some other fixs
+
+v3.7.0β r544 - 4/29/2015
+	* Fix bug: Evacuation Indicator not show correctly
+	* Plugin MapHP viewer
+	* Ships lock filter
+
 v3.7.0β r543 - 3/29/2015
 	* LogViewer plugin
 	* Show fleet state in overview panel

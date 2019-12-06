@@ -34,7 +34,7 @@
                 <Setter Property="Margin"
 						Value="5,0,5,5" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Source={x:Static models:Settings.Current}, Path=Orientation}" Value="Vertical">
+                    <DataTrigger Binding="{Binding Source={x:Static models:Settings.Current}, Path=Orientation.Mode}" Value="Vertical">
                         <Setter Property="Margin" Value="5,0,5,10"/>
                         <Setter Property="Padding" Value="8"/>
                     </DataTrigger>
@@ -55,7 +55,7 @@
                 <Setter Property="Margin"
 						Value="5,0,5,5" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Source={x:Static models:Settings.Current}, Path=Orientation}" Value="Vertical">
+                    <DataTrigger Binding="{Binding Source={x:Static models:Settings.Current}, Path=Orientation.Mode}" Value="Vertical">
                         <Setter Property="Margin" Value="5,0,5,10"/>
                         <Setter Property="Padding" Value="8"/>
                     </DataTrigger>
@@ -175,22 +175,21 @@
 											<TextBlock ToolTipService.Placement="Relative"
 													   ToolTipService.HorizontalOffset="-9"
 													   ToolTipService.VerticalOffset="-3"
-                                                       ToolTip="{Binding StatsToolTip, Mode=OneWay}"
                                                        ToolTipService.InitialShowDelay="600">
 												<Run Text="{Binding Ship.Info.Name, Mode=OneWay}"
 													 Style="{DynamicResource EmphaticTextElementStyleKey}" />
 												<LineBreak />
 												<Run Text="{Binding Ship.Info.ShipType.Name, Mode=OneWay}"
 													 FontSize="11" />
-												<!--<TextBlock.ToolTip>
+												<TextBlock.ToolTip>
 													<TextBlock Margin="0,-2,0,0">
-														<Run Text="{Binding Ship.Info.Name, Mode=OneWay}"
-															 Style="{DynamicResource EmphaticTextElementStyleKey}" />
-														<LineBreak />
-														<Run Text="{Binding Ship.Info.ShipType.Name, Mode=OneWay}"
-															 FontSize="11" />
+															<Run Text="{Binding Ship.Info.UntranslatedName, Mode=OneWay}"
+																 Style="{DynamicResource EmphaticTextElementStyleKey}" />
+															<LineBreak />
+															<Run Text="{Binding Ship.AllStats, Mode=OneWay}"
+																 FontSize="11" />
 													</TextBlock>
-												</TextBlock.ToolTip>-->
+												</TextBlock.ToolTip>
                                             </TextBlock>
 
 											<TextBlock Grid.Column="1"
@@ -211,7 +210,7 @@
 													<RowDefinition Height="Auto" />
 													<RowDefinition Height="Auto" />
 												</Grid.RowDefinitions>
-												<TextBlock ToolTip="{Binding RepairToolTip, Mode=OneWay}">
+												<TextBlock ToolTip="{Binding Ship.RepairTime, Mode=OneWay}">
 													<Run Text="HP:" />
 													<Run Text="{Binding Ship.HP.Current, Mode=OneWay}"
 														 Style="{DynamicResource EmphaticTextElementStyleKey}" />
@@ -221,7 +220,7 @@
 																		 Height="6"
 																		 LimitedValue="{Binding Ship.HP, Mode=OneWay}"
 																		 Margin="0,2,0,0"
-                                                                         ToolTip="{Binding RepairToolTip, Mode=OneWay}"/>
+                                                                         ToolTip="{Binding Ship.RepairTime, Mode=OneWay}"/>
 											</Grid>
 
 											<Grid x:Name="RepairIndicator"
@@ -273,7 +272,7 @@
 													Property="Visibility"
 													Value="Visible" />
 										</DataTrigger>
-										<DataTrigger Binding="{Binding Ship.Situation, Converter={StaticResource HasFlagConverter}, ConverterParameter=Tow|Evacuation}"
+										<DataTrigger Binding="{Binding Ship.Situation, Converter={StaticResource HasFlagConverter}, ConverterParameter=Evacuation}"
 													 Value="True">
 											<Setter TargetName="HPIndicator"
 													Property="Opacity"
@@ -282,7 +281,16 @@
 													Property="Visibility"
 													Value="Visible" />
 										</DataTrigger>
-                                        <DataTrigger Binding="{Binding Source={x:Static models:Settings.Current}, Path=Orientation}" Value="Vertical">
+										<DataTrigger Binding="{Binding Ship.Situation, Converter={StaticResource HasFlagConverter}, ConverterParameter=Tow}"
+													 Value="True">
+											<Setter TargetName="HPIndicator"
+													Property="Opacity"
+													Value=".2" />
+											<Setter TargetName="EvacuationIndicator"
+													Property="Visibility"
+													Value="Visible" />
+										</DataTrigger>
+                                        <DataTrigger Binding="{Binding Source={x:Static models:Settings.Current}, Path=Orientation.Mode}" Value="Vertical">
                                             <Setter TargetName="LevelText"
 											                Property="Margin"
 											                Value="12,0,0,0" />

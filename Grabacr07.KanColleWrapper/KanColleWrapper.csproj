@@ -100,6 +100,10 @@
     <Compile Include="Counter.cs" />
     <Compile Include="DisposableNotifier.cs" />
     <Compile Include="Dockyard.cs" />
+    <Compile Include="Globalization\Resources.Designer.cs" />
+    <Compile Include="Globalization\ResourceService.cs" />
+    <Compile Include="Models\BattleState.cs" />
+    <Compile Include="Models\Raw\kcsapi_midnight_battle.cs" />
     <Compile Include="Models\DroppedShip.cs" />
     <Compile Include="Models\CombinedFleet.cs" />
     <Compile Include="Models\FleetDock.cs" />
@@ -116,6 +120,7 @@
     <Compile Include="Models\ConditionRejuvenatedEventArgs.cs" />
     <Compile Include="Models\CreatedSlotItem.cs" />
     <Compile Include="Models\FleetCondition.cs" />
+    <Compile Include="Models\Raw\kcsapi_ship_deck.cs" />
     <Compile Include="Models\Raw\kcsapi_mst_maparea.cs" />
     <Compile Include="Models\Raw\kcsapi_mst_mapinfo.cs" />
     <Compile Include="Models\Raw\kcsapi_remodel_slot.cs" />
@@ -133,6 +138,7 @@
     <Compile Include="Models\Raw\kcsapi_powerup.cs" />
     <Compile Include="Models\Raw\kcsapi_remodel_slotlist.cs" />
     <Compile Include="Models\Raw\kcsapi_remodel_slotlist_detail.cs" />
+    <Compile Include="Models\SallyArea.cs" />
     <Compile Include="Models\ShipSituation.cs" />
     <Compile Include="Models\ShipSlot.cs" />
     <Compile Include="Models\SlotItemType.cs" />
@@ -226,6 +232,11 @@
     <Compile Include="Quests.cs" />
     <Compile Include="Rankings.cs" />
     <Compile Include="Repairyard.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Translations.cs" />
     <Compile Include="Updater.cs" />
     <Compile Include="KanColleClientSettings.cs" />
@@ -243,6 +254,26 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Globalization\Resources.en.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Resources.resx" />
+    <EmbeddedResource Include="Globalization\Resources.zh-CN.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Resources.zh-TW.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

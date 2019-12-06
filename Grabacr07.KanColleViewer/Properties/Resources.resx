@@ -481,16 +481,16 @@
     <value>クッキーを設定しました</value>
   </data>
   <data name="Settings_Translations" xml:space="preserve">
-    <value>Translations</value>
+    <value>翻訳</value>
   </data>
   <data name="Settings_Translations_Add_Enable" xml:space="preserve">
-    <value>Append untranslated items to the translation files?</value>
+    <value>ゲームの原文をファイルに書き込む</value>
   </data>
   <data name="Settings_Translations_Enable" xml:space="preserve">
-    <value>Translate game items, ships, and quests to selected language?</value>
+    <value>ゲームの原文を言語化する</value>
   </data>
   <data name="StartContent_SetRegionCookieToolTip" xml:space="preserve">
-    <value>Make sure DMM.com is set to Japanese (日本語)</value>
+    <value>日本語を選ぶのは必要です</value>
   </data>
   <data name="Stats_Accuracy" xml:space="preserve">
     <value>命中</value>
@@ -590,10 +590,10 @@
     <value>言語ファイルは既に最新版です</value>
   </data>
   <data name="Settings_Flash" xml:space="preserve">
-    <value>Flash</value>
+    <value>Flashの設定</value>
   </data>
   <data name="Settings_Flash_Quality" xml:space="preserve">
-    <value>Set Flash Quality:</value>
+    <value>Flashの質さ</value>
   </data>
   <data name="Settings_Flash_Window_ToolTip" xml:space="preserve">
     <value>Opaque: Default (Old IE has no HW accel)
@@ -601,7 +601,7 @@ Direct: Fastest rendering speed (HW accel)
 GPU: Slow! GPU optimization for tablets.</value>
   </data>
   <data name="Settings_Flash_Window" xml:space="preserve">
-    <value>Set Flash Window:</value>
+    <value>Flashのタイプ</value>
   </data>
   <data name="Settings_Flash_Quality_ToolTip" xml:space="preserve">
     <value>Best: Anti-Aliasing enabled on all images (Slowest)
@@ -624,8 +624,7 @@ Low: Performance over quality. Ugliest setting.</value>
     <value>ボリューム</value>
   </data>
   <data name="Settings_Flash_Message" xml:space="preserve">
-    <value>This works with DMM.com. OSAPI, and API links now!
-[You must reload the game for the changes to take affect.]</value>
+    <value>効果があるため、再起動するのは必要です</value>
   </data>
   <data name="Ship_RepairDockToolTip" xml:space="preserve">
     <value>入渠: {0}</value>
@@ -769,7 +768,7 @@ Low: Performance over quality. Ugliest setting.</value>
     <value>疲労回復まで</value>
   </data>
   <data name="StateDetail_OnExpedition" xml:space="preserve">
-    <value>遠征中</value>
+    <value>遠征中:</value>
   </data>
   <data name="StateDetail_OnSortie" xml:space="preserve">
     <value>艦隊は出撃中です！</value>
@@ -783,19 +782,13 @@ Low: Performance over quality. Ugliest setting.</value>
   <data name="ShipCatalog_SortieWaters" xml:space="preserve">
     <value>出撃海域</value>
   </data>
-  <data name="ShipCatalog_SortieWaters_AL" xml:space="preserve">
-    <value>AL 作戦</value>
-  </data>
-  <data name="ShipCatalog_SortieWaters_MI" xml:space="preserve">
-    <value>MI 作戦</value>
-  </data>
   <data name="ShipCatalog_Operation_AL" xml:space="preserve">
     <value>AL 作戦参加済み</value>
   </data>
   <data name="ShipCatalog_Operation_MI" xml:space="preserve">
     <value>MI 作戦参加済み</value>
   </data>
-  <data name="ShipCatalog_Operation_NeitherALnorMI" xml:space="preserve">
+  <data name="ShipCatalog_Operation_NotLocked" xml:space="preserve">
     <value>作戦出撃なし</value>
   </data>
   <data name="Settings_Operation_LoSCalculation" xml:space="preserve">
@@ -1183,7 +1176,7 @@ Low: Performance over quality. Ugliest setting.</value>
     <value>艦隊の艦娘は入渠していません</value>
   </data>
   <data name="StateDetail_OnExpeditionDetail" xml:space="preserve">
-    <value>艦隊は遠征中です</value>
+    <value>艦隊は遠征中です:</value>
   </data>
   <data name="StateDetail_OnShortSupply" xml:space="preserve">
     <value>艦隊に未補給の艦娘がいます</value>
@@ -1229,5 +1222,26 @@ Low: Performance over quality. Ugliest setting.</value>
   </data>
   <data name="ShipCatalog_CustomSort" xml:space="preserve">
     <value>ゲーム内</value>
+  </data>
+  <data name="ExitDialogConfirm" xml:space="preserve">
+    <value>「提督業も忙しい！」 を終了します。 よろしいですか？</value>
+  </data>
+  <data name="ExitDialogTitle" xml:space="preserve">
+    <value>EXIT KanColleViewer</value>
+  </data>
+  <data name="Settings_ExitConfirm" xml:space="preserve">
+    <value>終了確認</value>
+  </data>
+  <data name="Settings_ExitConfirmOnlyWhenInSortie" xml:space="preserve">
+    <value>出撃の時だけ</value>
+  </data>
+  <data name="Settings_ExitConfirmOption" xml:space="preserve">
+    <value>終了確認ダイアログを利用する</value>
+  </data>
+  <data name="Settings_ChangeOrientationMode" xml:space="preserve">
+    <value>オリエンテーションモードを変化する</value>
+  </data>
+  <data name="Settings_Flash_Enable" xml:space="preserve">
+    <value>Flashの設定をへんかする</value>
   </data>
 </root>

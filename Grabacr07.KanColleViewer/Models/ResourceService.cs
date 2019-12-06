@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Grabacr07.KanColleViewer.Properties;
+using ResourceServiceWrapper = Grabacr07.KanColleWrapper.Globalization.ResourceService;
 using Livet;
 
 namespace Grabacr07.KanColleViewer.Models
@@ -31,9 +32,8 @@ namespace Grabacr07.KanColleViewer.Models
 		{
 			"ja", // Resources.resx
 			"en",
-            "de",
 			"zh-CN",
-			"ko-KR",
+			"zh-TW",
 		};
 
 		/// <summary>
@@ -72,6 +72,7 @@ namespace Grabacr07.KanColleViewer.Models
 		public void ChangeCulture(string name)
 		{
 			Resources.Culture = this.SupportedCultures.SingleOrDefault(x => x.Name == name);
+			ResourceServiceWrapper.Current.ChangeCulture(name);
 
 			// リソースの変更を受けて設定に適切な値を適用します。
 			Settings.Current.Culture = Resources.Culture != null

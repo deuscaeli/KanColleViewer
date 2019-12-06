@@ -7,7 +7,7 @@ using Grabacr07.KanColleWrapper.Internal;
 using Grabacr07.KanColleWrapper.Models;
 using Grabacr07.KanColleWrapper.Models.Raw;
 using Livet;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace Grabacr07.KanColleWrapper
 {
@@ -20,6 +20,7 @@ namespace Grabacr07.KanColleWrapper
 
 		private readonly List<int> evacuatedShipsIds = new List<int>();
 		private readonly List<int> towShipIds = new List<int>();
+		public ObservableCollection<DroppedShip> DroppedShips { get; private set; }
 
 		#region Ships 変更通知プロパティ
 
@@ -107,28 +108,6 @@ namespace Grabacr07.KanColleWrapper
 
 		#endregion
 
-		#region DroppedShip 変更通知プロパティ
-
-		private DroppedShip _DroppedShip;
-
-		/// <summary>
-		/// New dropped ship
-		/// </summary>
-		public DroppedShip DroppedShip
-		{
-			get { return this._DroppedShip; }
-			set
-			{
-				if (this._DroppedShip != value)
-				{
-					this._DroppedShip = value;
-					this.RaisePropertyChanged();
-				}
-			}
-		}
-
-		#endregion
-
 
 		public Organization(Homeport parent, KanColleProxy proxy)
 		{
@@ -136,6 +115,7 @@ namespace Grabacr07.KanColleWrapper
 
 			this.Ships = new MemberTable<Ship>();
 			this.Fleets = new MemberTable<Fleet>();
+			this.DroppedShips = new ObservableCollection<DroppedShip>();
 
 			proxy.api_get_member_ship.TryParse<kcsapi_ship2[]>().Subscribe(x => this.Update(x.Data));
 			proxy.api_get_member_ship2.TryParse<kcsapi_ship2[]>().Subscribe(x =>
@@ -151,6 +131,7 @@ namespace Grabacr07.KanColleWrapper
 
 			proxy.api_get_member_deck.TryParse<kcsapi_deck[]>().Subscribe(x => this.Update(x.Data));
 			proxy.api_get_member_deck_port.TryParse<kcsapi_deck[]>().Subscribe(x => this.Update(x.Data));
+			proxy.api_get_member_ship_deck.TryParse<kcsapi_ship_deck>().Subscribe(x => this.Update(x.Data));
 
 			proxy.api_req_hensei_change.TryParse().Subscribe(this.Change);
 			proxy.api_req_hokyu_charge.TryParse<kcsapi_charge>().Subscribe(x => this.Charge(x.Data));
@@ -438,18 +419,17 @@ namespace Grabacr07.KanColleWrapper
 						this.towShipIds.Add(towOfferedShipIds[0]);
 					}
 				});
-			proxy.api_get_member_ship2
+			proxy.api_get_member_ship_deck
 				.Subscribe(_ =>
 				{
 					evacuationOfferedShipIds = null;
 					towOfferedShipIds = null;
 				});
-
-            proxy.api_req_sortie_battleresult.TryParse<kcsapi_battleresult>().Subscribe(x => this.DropShip(x.Data));
-            proxy.api_req_combined_battle_battleresult.TryParse<kcsapi_combined_battle_battleresult>().Subscribe(x =>
-            {
-                this.DropShip(x.Data);
-            });
+			proxy.api_req_sortie_battleresult.TryParse<kcsapi_battleresult>().Subscribe(x => this.DropShip(x.Data));
+			proxy.api_req_combined_battle_battleresult.TryParse<kcsapi_combined_battle_battleresult>().Subscribe(x =>
+			{
+				this.DropShip(x.Data);
+			});
 
 		}
 
@@ -476,6 +456,7 @@ namespace Grabacr07.KanColleWrapper
 		{
 			this.evacuatedShipsIds.Clear();
 			this.towShipIds.Clear();
+			this.DroppedShips.Clear();
 
 			foreach (var ship in this.Ships.Values)
 			{
@@ -489,20 +470,40 @@ namespace Grabacr07.KanColleWrapper
 			}
 		}
 
+		private void Update(kcsapi_ship_deck source)
+        {
+            if (source.api_ship_data != null)
+            {
+                foreach (var ship in source.api_ship_data)
+                {
+                    var target = this.Ships[ship.api_id];
+                    target.Update(ship);
+                }
+            }
+
+            if (source.api_deck_data != null)
+			{
+				foreach (var deck in source.api_deck_data)
+				{
+					var target = this.Fleets[deck.api_id];
+					target.Update(deck);
+				}
+			}
+		}
+
 		private void DropShip(kcsapi_battleresult source)
 		{
 			if (source.api_get_ship == null) return;
 
-			this.DroppedShip = new DroppedShip(source.api_get_ship);
+			this.DroppedShips.Add(new DroppedShip(source.api_get_ship));
 		}
 
 		private void DropShip(kcsapi_combined_battle_battleresult source)
 		{
 			if (source.api_get_ship == null) return;
 
-			this.DroppedShip = new DroppedShip(source.api_get_ship);
+			this.DroppedShips.Add(new DroppedShip(source.api_get_ship));
 		}
-        
 		#endregion
 	}
 }

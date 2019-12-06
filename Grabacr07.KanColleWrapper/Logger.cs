@@ -27,7 +27,7 @@ namespace Grabacr07.KanColleWrapper
 		// ReSharper disable once AssignNullToNotNullAttribute
 		public static string LogFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Logs");
 
-	    public enum LogType
+		public enum LogType
 		{
 			BuildItem,
 			BuildShip,
@@ -35,12 +35,12 @@ namespace Grabacr07.KanColleWrapper
 			Materials
 		};
 
-	    public struct LogTypeInfo
+		public struct LogTypeInfo
 		{
 			public string Parameters;
-            public string FileName;
+			public string FileName;
 
-            public LogTypeInfo(string parameters, string fileName)
+			public LogTypeInfo(string parameters, string fileName)
 			{
 				this.Parameters = parameters;
 				this.FileName = fileName;
@@ -187,7 +187,7 @@ namespace Grabacr07.KanColleWrapper
 			if (source == null || source.Length != 7)
 				return;
 
-			Log(LogType.Materials,
+			this.Log(LogType.Materials,
 				source[0].api_value, source[1].api_value, source[2].api_value, source[3].api_value, source[6].api_value, source[5].api_value, source[4].api_value);
 		}
 
@@ -196,7 +196,7 @@ namespace Grabacr07.KanColleWrapper
 			if (source == null || source.Length != 4)
 				return;
 
-			Log(LogType.Materials,
+			this.Log(LogType.Materials,
 				source[0], source[1], source[2], source[3], 
 				KanColleClient.Current.Homeport.Materials.DevelopmentMaterials, 
 				KanColleClient.Current.Homeport.Materials.InstantRepairMaterials, 
@@ -214,9 +214,7 @@ namespace Grabacr07.KanColleWrapper
 
 			using (var w = File.AppendText(logPath))
 			{
-				w.Write(DateTime.Now.ToString(this.LogTimestampFormat) + ",");
-				args.ForEach(arg => w.Write(arg + ","));
-                w.WriteLine();
+				w.WriteLine(DateTime.Now.ToString(this.LogTimestampFormat) + "," + string.Join(",", args));
 			}
 		}
 

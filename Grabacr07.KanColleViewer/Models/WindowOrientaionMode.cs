@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using Livet;
-using AppSettings = Grabacr07.KanColleViewer.Properties.Settings;
 
 namespace Grabacr07.KanColleViewer.Models
 {
-    public class WindowOrientaionMode : NotificationObject, IOrientationMode, IDisposable
+	public class WindowOrientaionMode : NotificationObject, IOrientationMode, IDisposable
 	{
-		public static bool EventSetted { get; private set; }
+		#region static members
+
+		static public bool EventSetted { get; private set; }
+
+		#endregion
+		
         public OrientationType[] SupportedModes
 		{
 			get {
@@ -19,112 +26,64 @@ namespace Grabacr07.KanColleViewer.Models
             }
 		}
 
-		#region Current 変更通知プロパティ
+		#region Mode 変更通知プロパティ
 
-        private OrientationType _Current;
+		private Orientation _Mode;
 
-        public OrientationType Current
+        public Orientation Mode
 		{
-			get { return this._Current; }
+			get { return this._Mode; }
 			private set
 			{
-                if (this._Current != value)
+                if (this._Mode != value)
 				{
-					ChangeWindowSize(value);
-                    this._Current = value;
+					this.ChangeWindowSize(value);
+                    this._Mode = value;
                     this.RaisePropertyChanged();
-                    this.RaisePropertyChanged("CurrentModeString");
                 }
 			}
 		}
 
 		#endregion
 
-        #region CurrentMode 変更通知プロパティ
+		#region CurrentMode 変更通知プロパティ
 
-        private OrientationType _CurrentMode;
+		private OrientationType _CurrentMode;
 
-        public OrientationType CurrentMode
-        {
-            get { return this._CurrentMode; }
-            set
-            {
-                if (this._CurrentMode != value)
-                {
-                    this._CurrentMode = value;
-                    if (value.Equals(OrientationType.Auto))
-                    {
-						if (!EventSetted)
-							System.Windows.SystemParameters.StaticPropertyChanged += SystemParameters_StaticPropertyChanged;
-						EventSetted = true;
-						updateOrientationMode();
-                    }
-                    else
-                    {
-                        System.Windows.SystemParameters.StaticPropertyChanged -= SystemParameters_StaticPropertyChanged;
-						EventSetted = false;
-                        this.Current = value;
-                    }
-                    this.RaisePropertyChanged("CurrentModeString");
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
+		public OrientationType CurrentMode
+		{
+			get { return this._CurrentMode; }
+			set
+			{
+				if (this._CurrentMode != value)
+				{
+					this._CurrentMode = value;
+					this.Refresh();
+					this.RaisePropertyChanged();
+				}
+			}
+		}
 
-        #endregion
-		
-		public void updateOrientationMode()
-        {
-            if (!this.CurrentMode.Equals(OrientationType.Auto)) return;
+		#endregion
 
-            if (System.Windows.SystemParameters.FullPrimaryScreenWidth >= System.Windows.SystemParameters.FullPrimaryScreenHeight)
-            {
-				this.Current = OrientationType.Horizontal;
-            }
-            else
-            {
-				this.Current = OrientationType.Vertical;
-            }
-        }
+		private void UpdateOrientationMode()
+		{
+			this.Mode = System.Windows.SystemParameters.FullPrimaryScreenWidth >= System.Windows.SystemParameters.FullPrimaryScreenHeight ? Orientation.Horizontal : Orientation.Vertical;
+		}
 
-        private void SystemParameters_StaticPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+	    private void SystemParameters_StaticPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("FullPrimaryScreenHeight") || e.PropertyName.Equals("FullPrimaryScreenWidth"))
             {
-                updateOrientationMode();
+                this.UpdateOrientationMode();
             }
         }
 
-        public string CurrentModeString
-        {
-            get {
-                if (this.CurrentMode == OrientationType.Auto)
-                {
-                    if (this.Current == OrientationType.Horizontal) return "Ah";
-                    else return "Av";
-                }
-                else
-                {
-                    if (this.Current == OrientationType.Horizontal) return "H";
-                    else return "V";
-                }
-            }
-        }
-
-		public WindowOrientaionMode()
+		private void ChangeWindowSize(Orientation type, System.Windows.Window window)
 		{
-		}
-
-		public void Dispose()
-		{
-			System.Windows.SystemParameters.StaticPropertyChanged -= SystemParameters_StaticPropertyChanged;
-		}
-
-		private void ChangeWindowSize(OrientationType type, System.Windows.Window window)
-		{
-			if (type.Equals(OrientationType.Horizontal))
+			if (type == Orientation.Horizontal)
 			{
-				if (window != null && !this._Current.Equals(OrientationType.Horizontal))
+				if (window != null && this.Mode != Orientation.Horizontal)
 				{
 					if (window.WindowState == System.Windows.WindowState.Normal)
 					{
@@ -137,7 +96,7 @@ namespace Grabacr07.KanColleViewer.Models
 			}
 			else
 			{
-				if (window != null && !this._Current.Equals(OrientationType.Vertical))
+				if (window != null && this.Mode != Orientation.Vertical)
 				{
 					if (window.WindowState == System.Windows.WindowState.Normal)
 					{
@@ -150,14 +109,37 @@ namespace Grabacr07.KanColleViewer.Models
 			}
 		}
 
-		private void ChangeWindowSize(OrientationType type)
+		private void ChangeWindowSize(Orientation type)
 		{
 			try
 			{
-				ChangeWindowSize(type, System.Windows.Application.Current.MainWindow);
+				this.ChangeWindowSize(type, System.Windows.Application.Current.MainWindow);
 			}
-			catch 
+			catch
 			{
+				// ignored
+			}
+		}
+
+		public void Dispose()
+		{
+			System.Windows.SystemParameters.StaticPropertyChanged -= this.SystemParameters_StaticPropertyChanged;
+		}
+
+		public void Refresh()
+		{
+			if (this.CurrentMode == OrientationType.Auto)
+			{
+				if (!EventSetted)
+					System.Windows.SystemParameters.StaticPropertyChanged += this.SystemParameters_StaticPropertyChanged;
+				EventSetted = true;
+				this.UpdateOrientationMode();
+			}
+			else
+			{
+				System.Windows.SystemParameters.StaticPropertyChanged -= this.SystemParameters_StaticPropertyChanged;
+				EventSetted = false;
+				this.Mode = this.CurrentMode == OrientationType.Horizontal ? Orientation.Horizontal : Orientation.Vertical;
 			}
 		}
 	}
